@@ -1,0 +1,278 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 FWI Prediction - Algerian Forest Fires</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        input[type="number"], 
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s ease-in;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .error {
+            background: #ffe0e0;
+            border-left-color: #ff6b6b;
+            color: #c92a2a;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+            animation: slideIn 0.3s ease-in;
+        }
+        
+        .info-box {
+            background: #e7f5ff;
+            border-left: 4px solid #339af0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            color: #0c5aa0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 FWI Prediction Model</h1>
+        <p class="subtitle">Algerian Forest Fires Fire Weather Index</p>
+        
+        <div class="info-box">
+            <strong>ℹ️ Note:</strong> Enter weather and fire index data to predict the Fire Weather Index (FWI) score.
+        </div>
+        
+        <form id="predictionForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="temperature">Temperature (°C) *</label>
+                    <input type="number" id="temperature" name="Temperature" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="rh">Relative Humidity (%) *</label>
+                    <input type="number" id="rh" name="RH" step="0.1" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ws">Wind Speed (km/h) *</label>
+                    <input type="number" id="ws" name="Ws" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="rain">Rain (mm) *</label>
+                    <input type="number" id="rain" name="Rain" step="0.1" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ffmc">FFMC (Fine Fuel Moisture Code) *</label>
+                    <input type="number" id="ffmc" name="FFMC" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="dmc">DMC (Duff Moisture Code) *</label>
+                    <input type="number" id="dmc" name="DMC" step="0.1" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dc">DC (Drought Code) *</label>
+                    <input type="number" id="dc" name="DC" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="isi">ISI (Initial Spread Index) *</label>
+                    <input type="number" id="isi" name="ISI" step="0.1" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bui">BUI (Buildup Index) *</label>
+                    <input type="number" id="bui" name="BUI" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="classes">Classes (0=not fire, 1=fire) *</label>
+                    <input type="number" id="classes" name="Classes" min="0" max="1" step="1" required>
+                </div>
+            </div>
+            
+            <button type="submit">Predict FWI</button>
+        </form>
+        
+        <div id="result" class="result">
+            <div class="result-label">Predicted Fire Weather Index (FWI):</div>
+            <div class="result-value" id="resultValue">-</div>
+        </div>
+        
+        <div id="error" class="result error">
+            <div id="errorMessage">Error occurred</div>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            resultDiv.classList.remove('show');
+            errorDiv.classList.remove('show');
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch('/predict_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) {
+                    errorDiv.classList.add('show');
+                    document.getElementById('errorMessage').textContent = result.error;
+                } else {
+                    document.getElementById('resultValue').textContent = result.prediction.toFixed(2);
+                    resultDiv.classList.add('show');
+                }
+            } catch (error) {
+                errorDiv.classList.add('show');
+                document.getElementById('errorMessage').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
